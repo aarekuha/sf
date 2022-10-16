@@ -38,7 +38,7 @@
     pip install -U pip
     pip install -r app/requirements.txt
     # отправка сообщения с заголовком route=another_method, one="any string", more="another string"
-    python send.py
+    python app/send.py
     # отправка сообщения с заголовками route=train_model, model_id=17 и body="текст сообщения"
-    python send.py "текст сообщения"
+    python app/send.py "текст сообщения"
 ```
