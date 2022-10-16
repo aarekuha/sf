@@ -45,3 +45,8 @@
     # отправка сообщения с заголовками route=train_model, model_id=17 и body="текст сообщения"
     python app/send.py "текст сообщения"
 ```
+##### Останов/удаление контейнеров
+```bash
+    docker-compose stop
+    docker-compose rm
+```
