@@ -103,7 +103,15 @@ class Queue(ServiceBase):
     async def consume(self, loop: AbstractEventLoop, callback: Callable) -> None:
         """ Запуск консьюмера из "исходной" очереди """
         self._loop: AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
-        connection: AbstractRobustConnection = await aio_pika.connect_robust(self._dsn_src_queue)
+        try:
+            connection: AbstractRobustConnection = await aio_pika.connect_robust(self._dsn_src_queue)
+        except ConnectionError:
+            self.logger.error("Connection error. Reconnecting...")
+            await asyncio.sleep(self.RECONNECT_DELAY_SEC)
+            await self.consume(loop=loop, callback=callback)
+            return
+
+        self.logger.info("Queue connected...")
         channel: AbstractChannel = await connection.channel()
         await channel.set_qos(prefetch_count=self.DEFAULT_PREFETCH_COUNT)
         queue: AbstractQueue = await channel.declare_queue(
@@ -112,6 +120,7 @@ class Queue(ServiceBase):
         )
         # "Подключение" метода обработки полученных сообщений
         await queue.consume(callback)
+        self.logger.info("Listener started...")
         # Ожидание завершения обработки очереди
         try:
             await asyncio.Future()
