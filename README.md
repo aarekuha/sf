@@ -33,6 +33,9 @@
 ```bash
     git clone git@github.com:aarekuha/sf.git
     cd sf
+
+    docker-compose up -d  # Если сервис еще не запущен в контейнере
+
     python -m venv venv
     source ./venv/bin/activate
     pip install -U pip
