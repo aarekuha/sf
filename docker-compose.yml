@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  rabbitmq:
+  sf-rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: sf-rabbitmq
     ports:
@@ -9,8 +9,13 @@ services:
       - 15672:15672
     networks:
       - rabbit_mq_net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 100
 
-  framework:
+  sf-service:
     build: ./app
     container_name: sf-service
     environment:
@@ -25,6 +30,9 @@ services:
       - DST_QUEUE_PORT=5672
       - DST_QUEUE_USERNAME=guest
       - DST_QUEUE_PASSWORD=guest
+    depends_on:
+      sf-rabbitmq:
+        condition: service_healthy
 
     networks:
       - rabbit_mq_net
