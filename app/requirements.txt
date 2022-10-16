@@ -1,0 +1,8 @@
+aio-pika==8.2.4
+aiormq==6.4.2
+asyncio==3.4.3
+idna==3.4
+multidict==6.0.2
+pamqp==3.2.1
+python-dotenv==0.21.0
+yarl==1.8.1

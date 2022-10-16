@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: sf-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - rabbit_mq_net
+
+  framework:
+    build: ./app
+    container_name: sf-service
+    environment:
+      - DEBUG=0
+      - SRC_QUEUE_NAME=hello
+      - SRC_QUEUE_HOST=sf-rabbitmq
+      - SRC_QUEUE_PORT=5672
+      - SRC_QUEUE_USERNAME=guest
+      - SRC_QUEUE_PASSWORD=guest
+      - DST_QUEUE_NAME=results
+      - DST_QUEUE_HOST=sf-rabbitmq
+      - DST_QUEUE_PORT=5672
+      - DST_QUEUE_USERNAME=guest
+      - DST_QUEUE_PASSWORD=guest
+
+    networks:
+      - rabbit_mq_net
+
+networks:
+  rabbit_mq_net:
+    driver: bridge
