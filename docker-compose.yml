@@ -11,7 +11,7 @@ services:
       - rabbit_mq_net
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 2s
+      interval: 10s
       timeout: 2s
       retries: 100
 
